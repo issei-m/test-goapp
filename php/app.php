@@ -8,7 +8,11 @@ namespace user {
         }
     }
 
-    class Repository {
+    interface Repository {
+        public function createUser(User $user): void;
+    }
+
+    class PdoRepository implements Repository {
         public function __construct(private \PDO $pdo)
         {
         }
@@ -41,7 +45,7 @@ namespace app {
 
 namespace main {
     $db = new \PDO('mysql:host=host.docker.internal;port=13306;user=root;dbname=goapp');
-    $userRepo = new \user\Repository($db);
+    $userRepo = new \user\PdoRepository($db);
 
     $user = \app\registerUser($userRepo, 'foo@example.com');
     print_r($user);
