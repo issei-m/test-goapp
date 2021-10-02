@@ -27,3 +27,10 @@ func (r *Repository) CreateUser(user *User) error {
 
 	return nil
 }
+
+func (r *Repository) DeleteUserByID(id int64) error {
+	if _, err := r.DB.Exec("DELETE FROM users WHERE id = ?", id); err != nil {
+		return fmt.Errorf("database error %w", err)
+	}
+	return nil
+}

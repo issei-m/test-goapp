@@ -22,4 +22,10 @@ func main() {
 	}
 
 	fmt.Printf("created: %v", user)
+
+	if err := repo.DeleteUserByID(user.ID); err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("deleted: %v", user)
 }
