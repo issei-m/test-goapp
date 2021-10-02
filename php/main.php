@@ -6,6 +6,6 @@ namespace main {
     $db = new \PDO('mysql:host=host.docker.internal;port=13306;user=root;dbname=goapp');
     $userRepo = new \user\PdoRepository($db);
 
-    $user = \app\registerUser($userRepo, 'foo@example.com');
+    $user = \app\registerUser(new \app\DelegatingToRepoUserCreator($userRepo), 'foo@example.com');
     print_r($user);
 }

@@ -31,13 +31,27 @@ namespace user {
 namespace app {
     use \user;
 
+    interface UserCreator {
+        public function createUser(user\User $user): void;
+    }
+
     /**
-     * $email で user\User モデルを初期化し、 user\Repository を使って保存します. 成功した場合、作成した user\User モデルを返します.
+     * 処理を user\Repository に委譲するだけ.
+     */
+    class DelegatingToRepoUserCreator implements UserCreator {
+        public function __construct(private user\Repository $userRepo) {} // PHP 8 で追加されたオブジェクト初期化子
+        public function createUser(user\User $user): void {
+            $this->userRepo->createUser($user);
+        }
+    }
+
+    /**
+     * $email で user\User モデルを初期化し、 UserCreator を使って保存します. 成功した場合、作成した user\User モデルを返します.
      * 失敗した場合、 RuntimeException がスローされます.
      */
-    function registerUser(user\Repository $userRepo, string $email): ?user\User {
+    function registerUser(UserCreator $creator, string $email): ?user\User {
         $user = new user\User(email: $email); // PHP 8 で追加された名前付き引数
-        $userRepo->createUser($user);
+        $creator->createUser($user);
 
         return $user;
     }
